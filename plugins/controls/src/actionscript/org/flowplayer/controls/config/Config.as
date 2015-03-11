@@ -211,6 +211,8 @@ package org.flowplayer.controls.config {
 			config.setBorderRadius(_style['scrubberBorderRadius']);
 			config.setHeightRatio(_style['scrubberHeightRatio']);
 
+			config.setDisabledDragging(_style['disabledDragging']);
+
 			return config;
 		}
 

@@ -370,6 +370,11 @@ package org.flowplayer.controls.scrubber {
 
 
        public function set allowRandomSeek(value:Boolean):void {
+          //notice: this condition may cause some issues, should be checked in case of some problems
+          if ( value && _config.disabledDragging ){
+            return;
+          }
+
           //log.error("set allowRandomSeek", value);
           _allowRandomSeek = value;
           if (_enabled) {

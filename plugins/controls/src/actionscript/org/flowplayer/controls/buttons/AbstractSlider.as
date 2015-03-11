@@ -156,9 +156,7 @@ package org.flowplayer.controls.buttons {
 				stage[func](Event.MOUSE_LEAVE, onMouseLeaveStage);
 			}
 			
-			toggleClickListeners(value);
-
-            //#483 move up button mode config to detect enabled state, toggle slider enabled / disabled colour correctly.
+			//#483 move up button mode config to detect enabled state, toggle slider enabled / disabled colour correctly.
             _dragger.buttonMode = value;
             if (! enabled) {
                 _dragger.alpha = 0.5;
@@ -167,8 +165,15 @@ package org.flowplayer.controls.buttons {
                 removeChild(_dragger);
                 createDragger();
             }
+
+            if ( value && _config.disabledDragging ){
+        		return;
+            }
+
+			toggleClickListeners(value);
+
             _dragger[func](MouseEvent.MOUSE_UP, _onMouseUp);
-            _dragger[func](MouseEvent.MOUSE_DOWN, _onMouseDown);
+            _dragger[func](MouseEvent.MOUSE_DOWN, _onMouseDown);            	
         }
 
         protected function drawSlider():void {

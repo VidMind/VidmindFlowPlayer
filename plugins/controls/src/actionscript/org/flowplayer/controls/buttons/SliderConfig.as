@@ -23,6 +23,8 @@ package org.flowplayer.controls.buttons {
 		
 		private var _enabled:Boolean = true;
 
+		private var _disabledDragging:Boolean = false;
+
         /*
          * Color.
          */
@@ -106,5 +108,16 @@ package org.flowplayer.controls.buttons {
 		public function setEnabled(value:Boolean):void {
 			_enabled = value;
 		}
+
+        /**
+         * Live video specific properties
+         */
+        public function get disabledDragging():Boolean {
+            return _disabledDragging;
+        }
+
+        public function setDisabledDragging(value:Boolean):void {
+            _disabledDragging = value;
+        }
     }
 }
