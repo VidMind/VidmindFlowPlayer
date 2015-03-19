@@ -26,6 +26,7 @@ package org.flowplayer.controls.scrubber {
     import org.flowplayer.model.Status;
     import org.flowplayer.util.GraphicsUtil;
     import org.flowplayer.view.Flowplayer;
+    import org.flowplayer.controls.controllers.PlayTimeSimulator;
 
     /**
 	 * @author api
@@ -49,6 +50,7 @@ package org.flowplayer.controls.scrubber {
        private var _currentClip:Clip;
        private var _isSeekPaused:Boolean;
        private var _isRtmp:Boolean;
+       private var _playTimeSimulator:PlayTimeSimulator;
 
        public function ScrubberSlider(config:ScrubberConfig, player:Flowplayer, controlbar:DisplayObject) {
           super(config, player, controlbar);
@@ -56,6 +58,10 @@ package org.flowplayer.controls.scrubber {
           lookupPluginAndBindEvent(_player, "audio", onAudioEvent);
           createBars();
           addPlaylistListeners(_player.playlist);
+
+          if ( config.playTimeSimulator.enabled ){
+            _playTimeSimulator = new PlayTimeSimulator( config.playTimeSimulator.beginTime, config.playTimeSimulator.endTime );
+          }
        }
 
        private function lookupPluginAndBindEvent(player:Flowplayer, pluginName:String, eventHandler:Function):void {
@@ -117,7 +123,7 @@ package org.flowplayer.controls.scrubber {
 
           if (! isTrickPlay) {
              stopTrickPlayTracking();
-             doStart(_slowMotionInfo["clip"], adjustedTime(_player.status.time));
+             doStart(_slowMotionInfo["clip"], adjustedTime(getStatusTime()));
 
           } else {
              startTrickPlayTracking();
@@ -149,7 +155,7 @@ package org.flowplayer.controls.scrubber {
        }
 
        private function onTrickPlayProgress(event:TimerEvent):void {
-          updateDraggerPos(_player.status.time, _slowMotionInfo["clip"] as Clip);
+          updateDraggerPos(getStatusTime(), _slowMotionInfo["clip"] as Clip);
        }
 
        protected override function onResize():void {
@@ -161,8 +167,8 @@ package org.flowplayer.controls.scrubber {
           if ( _currentClip )
           {
              stop(null);
-             updateDraggerPos(_player.status.time, _currentClip);
-             doStart(_currentClip, _player.status.time);
+             updateDraggerPos(getStatusTime(), _currentClip);
+             doStart(_currentClip, getStatusTime());
           }
 
        }
@@ -171,7 +177,7 @@ package org.flowplayer.controls.scrubber {
           //#390 regression issue with updating with maxDrag inside a buffer use full scrubbar dimensions as boundary is contained elsewhere.
           //using bitwise operation here instead of Math.min.
           var bounds:int = (width - _dragger.width);
-          var pos:int = (time / clip.duration) * bounds;
+          var pos:int = (time / getClipDuration()) * bounds;
           _dragger.x =  pos > bounds ? bounds :pos;
        }
 
@@ -184,8 +190,8 @@ package org.flowplayer.controls.scrubber {
                 enableDragging(false);
              }
              stop(null);
-             updateDraggerPos(_player.status.time, event.target as Clip);
-             doStart(event.target as Clip, _player.status.time);
+             updateDraggerPos(getStatusTime(), event.target as Clip);
+             doStart(event.target as Clip, getStatusTime());
              return;
           }
 
@@ -256,18 +262,18 @@ package org.flowplayer.controls.scrubber {
           _startDetectTimer = new Timer(200);
           _startDetectTimer.addEventListener(TimerEvent.TIMER,
                   function(event:TimerEvent):void {
-                     var currentTime:Number = _player.status.time;
+                     var currentTime:Number = getStatusTime();
                      log.debug("on startDetectTimer() currentTime " + currentTime + ", time " + time);
 
                      if (Math.abs(currentTime - time) > 0.2) {
                         _startDetectTimer.stop();
                         var endPos:Number = width - _dragger.width;
-                        log.debug("animation duration is " + clip.duration + " - "+ time + " * 1000");
+                        log.debug("animation duration is " + getClipDuration() + " - "+ time + " * 1000");
                         // var duration:Number = (clip.duration - time) * 1000;
-                        var duration:Number = (clip.duration - currentTime) * 1000;
+                        var duration:Number = (getClipDuration() - currentTime) * 1000;
 
                         updateDraggerPos(currentTime, clip);
-                        log.debug("doStart(), starting an animation to x pos " + endPos + ", the duration is " + duration + ", current pos is " + _dragger.x + ", time is "+ currentTime);
+                        log.debug("console.log", "doStart(), starting an animation to x pos " + endPos + ", the duration is " + duration + ", current pos is " + _dragger.x + ", time is "+ currentTime);
 
                         animationEngine.animateProperty(_dragger, "x", endPos, duration, null,
                                 function():void {
@@ -354,7 +360,10 @@ package org.flowplayer.controls.scrubber {
              clearBar(_progressBar);
              return;
           }
-          drawBar(_progressBar, _config.color, _config.alpha, _config.gradient, leftEdge || 0, rightEdge || _dragger.x + _dragger.width - 2);
+
+          var _barHeight:Number = _config.progressBarHeightRatio || barHeight;
+
+          drawBar(_progressBar, _config.color, _config.alpha, _config.gradient, leftEdge || 0, rightEdge || _dragger.x + _dragger.width - 2, _barHeight);
        }
 
 
@@ -451,6 +460,7 @@ package org.flowplayer.controls.scrubber {
           if (silent && ! _currentClip.dispatchBeforeEvent(new ClipEvent(ClipEventType.SEEK, value))) {
              return;
           }
+
           _player.seekRelative(value , silent);
        }
 
@@ -497,5 +507,18 @@ package org.flowplayer.controls.scrubber {
              seekToScrubberValue(true);
           }
        }
+
+       protected function getStatusTime():Number {
+          return _config.playTimeSimulator.enabled ? _playTimeSimulator.current : _player.status.time;
+       }
+
+       protected function getClipDuration( clip:Clip = undefined ):Number {
+          if ( _config.playTimeSimulator.enabled ){
+            return _playTimeSimulator.duration;
+          }else{
+            return clip ? clip.duration : 0;
+          }
+       }
+
     }
 }

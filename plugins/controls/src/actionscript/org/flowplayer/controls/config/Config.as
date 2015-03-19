@@ -201,6 +201,7 @@ package org.flowplayer.controls.config {
 			config.setGradient(decodeGradient(_style['progressGradient']));
 			config.setBufferGradient(decodeGradient(_style['bufferGradient']))
 			config.setBarHeightRatio(_style['scrubberBarHeightRatio']);
+			config.setProgressBarHeightRatio(_style['scrubberProgressBarHeightRatio']);
             config.setDisabledColor(_style['disabledWidgetColor']);
 
 			var draggerConfig:TooltipButtonConfig = buttonConfig;
@@ -212,6 +213,7 @@ package org.flowplayer.controls.config {
 			config.setHeightRatio(_style['scrubberHeightRatio']);
 
 			config.setDisabledDragging(_style['disabledDragging']);
+			config.setPlayTimeSimulator(_style['playTimeSimulator']);
 
 			return config;
 		}

@@ -23,7 +23,7 @@ package org.flowplayer.controls.buttons {
     import org.flowplayer.util.GraphicsUtil;
     import org.flowplayer.view.AnimationEngine;
     import org.flowplayer.view.Flowplayer;
-
+    
     /**
 	 * @author api
 	 */
@@ -381,17 +381,21 @@ package org.flowplayer.controls.buttons {
 			GraphicsUtil.drawRoundRectangle(_border.graphics, 0, height/2 - barHeight/2, width, barHeight, barCornerRadius);
 		}
 
-		protected function drawBar(bar:Sprite, color:Number, alpha:Number, gradientAlphas:Array, leftEdge:Number, rightEdge:Number):void {
+		protected function drawBar(bar:Sprite, color:Number, alpha:Number, gradientAlphas:Array, leftEdge:Number, rightEdge:Number, _barHeight:Number = 0):void {
 			bar.graphics.clear();
 			if (leftEdge > rightEdge) return;
 			bar.scaleX = 1;
-			
+
+			if ( ! _barHeight ){
+				_barHeight = barHeight;
+			}
+
 			bar.graphics.beginFill(color, alpha);
-			bar.graphics.drawRoundRect(leftEdge, height/2 - barHeight/2, rightEdge - leftEdge, barHeight, barCornerRadius, barCornerRadius);
+			bar.graphics.drawRoundRect(leftEdge, height/2 - _barHeight/2, rightEdge - leftEdge, _barHeight, barCornerRadius, barCornerRadius);
 			bar.graphics.endFill();
 			
 			if (gradientAlphas) {
-				GraphicsUtil.addGradient(bar, 0, gradientAlphas, barCornerRadius, leftEdge,  height/2 - barHeight/2 , barHeight);
+				GraphicsUtil.addGradient(bar, 0, gradientAlphas, barCornerRadius, leftEdge,  height/2 - _barHeight/2 , _barHeight);
 			} else {
 				GraphicsUtil.removeGradient(bar);
 			}

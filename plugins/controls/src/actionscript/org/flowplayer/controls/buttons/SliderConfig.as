@@ -12,6 +12,8 @@ package org.flowplayer.controls.buttons {
     import org.flowplayer.util.StyleSheetUtil;
 	import org.flowplayer.ui.buttons.TooltipButtonConfig;
 	import org.flowplayer.controls.config.BorderedWidgetConfig;
+    import org.flowplayer.controls.config.PlayTimeSimulatorConfig;
+    import org.flowplayer.util.PropertyBinder;
 	
     public class SliderConfig extends BorderedWidgetConfig {
         private var _color:String;
@@ -19,11 +21,20 @@ package org.flowplayer.controls.buttons {
 		private var _gradient:Array;
 
 		private var _barHeightRatio:Number;
+        private var _progressBarHeightRatio:Number;
 		private var _draggerButtonConfig:TooltipButtonConfig;
 		
 		private var _enabled:Boolean = true;
 
 		private var _disabledDragging:Boolean = false;
+
+        private var _playTimeSimulator:PlayTimeSimulatorConfig;
+
+        public function SliderConfig(){
+            super();
+
+            _playTimeSimulator = new PlayTimeSimulatorConfig();
+        }
 
         /*
          * Color.
@@ -88,6 +99,14 @@ package org.flowplayer.controls.buttons {
 		public function setBarHeightRatio(ratio:Number):void {
 			_barHeightRatio = ratio;
 		}
+
+        public function get progressBarHeightRatio():Number {
+            return _progressBarHeightRatio;
+        }
+        
+        public function setProgressBarHeightRatio(ratio:Number):void {
+            _progressBarHeightRatio = ratio;
+        }
 		
 		public function get draggerButtonConfig():TooltipButtonConfig {
 			return _draggerButtonConfig;
@@ -118,6 +137,20 @@ package org.flowplayer.controls.buttons {
 
         public function setDisabledDragging(value:Boolean):void {
             _disabledDragging = value;
+        }
+
+        // Provide interface for playTimeSimulator
+        [Value]
+        public function get playTimeSimulator():PlayTimeSimulatorConfig {
+            return _playTimeSimulator;
+        }
+
+        public function setPlayTimeSimulator(value:Object):void {
+            if (value is Boolean) {
+                _playTimeSimulator.enabled = value as Boolean;
+            }else{
+                new PropertyBinder(_playTimeSimulator).copyProperties(value);
+            }
         }
     }
 }

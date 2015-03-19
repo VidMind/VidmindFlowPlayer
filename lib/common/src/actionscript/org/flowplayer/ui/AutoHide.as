@@ -42,11 +42,12 @@ package org.flowplayer.ui {
         private var _config:AutoHideConfig;
         private var _player:Flowplayer;
         private var _originalPos:Object;
-        private var _mouseOver:Boolean = false;
         private var _model:DisplayPluginModel;
         private var _hideListener:Function;
         private var _showListener:Function;
-
+        
+        private static var _mouseOver:Boolean = false; // NOTE: temporary solution, shared '_mouseOver' state between multiple control plugins
+        
         public function AutoHide(model:DisplayPluginModel, config:AutoHideConfig, player:Flowplayer, stage:Stage, displayObject:DisplayObject) {
             //            Assert.notNull(model, "model cannot be null");
             Assert.notNull(config, "config cannot be null");
@@ -162,7 +163,8 @@ package org.flowplayer.ui {
                 return;
             }
 
-            log.warn("HIDING ? " + (ignoreMouseOver ? 'true ' : 'false ') + (_mouseOver ? 'true ' : 'false '))
+            var _mouseOver:Boolean = AutoHide._mouseOver;
+
             if (! ignoreMouseOver && _mouseOver) return;
 
             log.debug("dispatching onBeforeHidden");
@@ -246,6 +248,7 @@ package org.flowplayer.ui {
                     stop();
                 }
                 _disp.alpha = 0;
+                AutoHide._mouseOver = false;
                 cancelAnimation();
                 show();
             }
@@ -273,12 +276,12 @@ package org.flowplayer.ui {
 
         private function onMouseOver(event:MouseEvent):void {
             //log.warn("MOUSE OVER");
-            _mouseOver = true;
+            AutoHide._mouseOver = true;
         }
 
         private function onMouseOut(event:MouseEvent):void {
             //log.warn("MOUSE OUT");
-            _mouseOver = false;
+            AutoHide._mouseOver = false;
         }
 
 
