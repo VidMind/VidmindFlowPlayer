@@ -273,7 +273,7 @@ package org.flowplayer.controls.scrubber {
                         var duration:Number = (getClipDuration() - currentTime) * 1000;
 
                         updateDraggerPos(currentTime, clip);
-                        log.debug("console.log", "doStart(), starting an animation to x pos " + endPos + ", the duration is " + duration + ", current pos is " + _dragger.x + ", time is "+ currentTime);
+                        log.debug("doStart(), starting an animation to x pos " + endPos + ", the duration is " + duration + ", current pos is " + _dragger.x + ", time is "+ currentTime);
 
                         animationEngine.animateProperty(_dragger, "x", endPos, duration, null,
                                 function():void {
