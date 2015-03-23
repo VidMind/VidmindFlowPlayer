@@ -177,7 +177,7 @@ package org.flowplayer.controls.scrubber {
           //#390 regression issue with updating with maxDrag inside a buffer use full scrubbar dimensions as boundary is contained elsewhere.
           //using bitwise operation here instead of Math.min.
           var bounds:int = (width - _dragger.width);
-          var pos:int = (time / getClipDuration()) * bounds;
+          var pos:int = (time / getClipDuration(clip)) * bounds;
           _dragger.x =  pos > bounds ? bounds :pos;
        }
 
@@ -268,9 +268,9 @@ package org.flowplayer.controls.scrubber {
                      if (Math.abs(currentTime - time) > 0.2) {
                         _startDetectTimer.stop();
                         var endPos:Number = width - _dragger.width;
-                        log.debug("animation duration is " + getClipDuration() + " - "+ time + " * 1000");
+                        log.debug("animation duration is " + getClipDuration(clip) + " - "+ time + " * 1000");
                         // var duration:Number = (clip.duration - time) * 1000;
-                        var duration:Number = (getClipDuration() - currentTime) * 1000;
+                        var duration:Number = (getClipDuration(clip) - currentTime) * 1000;
 
                         updateDraggerPos(currentTime, clip);
                         log.debug("doStart(), starting an animation to x pos " + endPos + ", the duration is " + duration + ", current pos is " + _dragger.x + ", time is "+ currentTime);
