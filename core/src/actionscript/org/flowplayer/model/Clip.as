@@ -84,6 +84,9 @@ package org.flowplayer.model {
         private var _encoding:Boolean = false;
         private var _stopLiveOnPause:Boolean = true;
 
+        // Vidmind updates
+        private var _playToggle:Boolean = true;
+
         public function Clip() {
             _childPlaylist = new TimedPlaylist();
 
@@ -1023,6 +1026,14 @@ package org.flowplayer.model {
 
         public function set stopLiveOnPause(value:Boolean):void {
             _stopLiveOnPause = value;
+        }
+
+        public function get playToggle():Boolean {
+            return _playToggle;
+        }
+
+        public function set playToggle(value:Boolean):void {
+            _playToggle = value;
         }
     }
 }

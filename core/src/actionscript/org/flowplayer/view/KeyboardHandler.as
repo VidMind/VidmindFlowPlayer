@@ -37,7 +37,9 @@ package org.flowplayer.view {
 			_keyboardShortcutsEnabled = true;
 			
            addKeyListener(Keyboard.SPACE, function(event:KeyboardEvent):void {
-                _player.toggle();
+               if ( _player.playlist.current.playToggle ){ // Vidmind update
+                   _player.toggle();
+               }
             });
 
             /*

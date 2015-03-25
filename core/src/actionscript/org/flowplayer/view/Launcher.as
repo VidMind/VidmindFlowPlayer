@@ -876,7 +876,7 @@ package org.flowplayer.view {
         }
 
         private function onSingleClick(event:MouseEvent):void {
-            if (isParent(DisplayObject(event.target), _screen)) {
+            if (isParent(DisplayObject(event.target), _screen) && _flowplayer.playlist.current.playToggle) {
                 log.debug("screen clicked");
                 _flowplayer.toggle();
             }
@@ -888,7 +888,9 @@ package org.flowplayer.view {
             event.stopPropagation();
 
             if (_playButtonOverlay && isParent(DisplayObject(event.target), _playButtonOverlay.getDisplayObject())) {
-                _flowplayer.toggle();
+                if ( _flowplayer.playlist.current.playToggle ) {
+                    _flowplayer.toggle();
+                }
                 return;
             } else {
                 // if using linkUrl, no doubleclick to fullscreen
